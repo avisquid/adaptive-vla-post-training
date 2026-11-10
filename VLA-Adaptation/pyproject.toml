@@ -1,0 +1,58 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "rsm-real"
+version = "0.1.0"
+description = "Real-robot collection and policy evaluation for RSM experiments"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "hydra-core>=1.3.2,<1.4",
+    "omegaconf>=2.3.0,<2.4",
+    "h5py>=3.13,<4",
+    "numpy>=1.26,<3",
+    "opencv-python>=4.10,<5",
+    "PyYAML>=6.0.2,<7",
+]
+
+[project.optional-dependencies]
+visualization = ["matplotlib>=3.10,<4"]
+# Keep the robot driver and its native runtime aligned with the deployed robot.
+# aiofranka 0.9.0's native loop is built for exactly pylibfranka 0.21.3.
+# OpenPI uses the documented real-hardware profile, which makes its simulation
+# dependency gym-aloha optional so it does not constrain the robot's MuJoCo.
+hardware = [
+    "aiofranka==0.9.0",
+    "mujoco==3.12.0",
+    "numba==0.68.0",
+    "pylibfranka==0.21.3",
+    "piper-sdk==0.6.1",
+    "pyrealsense2==2.55.1.6486",
+    "scipy>=1.14,<2",
+    # Holds the control process's BLAS to one thread (real/robot.py).
+    "threadpoolctl>=3.6,<4",
+]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["real", "real.*", "bc", "dagger", "dagger.*"]
+# These directories are package data, rather than Python namespace packages.
+exclude = ["real.config*", "real.collection.ui*", "real.dataset.ui*"]
+namespaces = true
+
+[tool.setuptools.package-data]
+real = [
+    "fr3_calibration.urdf",
+    "config/*.yaml",
+    "config/*/*.yaml",
+    "config/images/*.jpg",
+    "collection/ui/*.html",
+    "collection/ui/*.css",
+    "collection/ui/*.js",
+    "collection/ui/*.svg",
+    "dataset/ui/*.html",
+    "dataset/ui/*.css",
+    "dataset/ui/*.js",
+]

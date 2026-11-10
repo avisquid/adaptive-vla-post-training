@@ -1,0 +1,63 @@
+# Pan/tomato tabletop task shared by collection, deployment, and evaluation.
+# Hydra packages this file under cfg.task. State IDs are list indices.
+#
+# `perception` is consumed by MultiRSDevice (real/perception/rs_device.py).
+# The keys under perception are the camera names used in observations.
+#
+# Override the serial on the CLI if your rig uses a different camera, e.g.:
+#   python -m real.collect_sft_data ... task.perception.global.serial=<sn>
+perception:
+  global: 
+    serial: "242522070762"
+    resolution: [640, 480]
+    # target_size: [320, 240]
+    frame_rate: 60
+    depth: false
+  wrist:
+    serial: "230322274968"
+    resolution: [640, 480]
+    # target_size: [320, 240]
+    frame_rate: 60
+    depth: false
+  # Third-person view (second D435I): shown in the dashboard and recorded in every
+  # episode, but not a policy input (rollout.cameras selects global and wrist).
+  observer:
+    serial: "242622071805"
+    resolution: [640, 480]
+    frame_rate: 60
+    depth: false
+
+
+states:
+ - {"label": "[initial state] Pan at starting position, Tomato at starting position", "image": "../images/state_0_initial.jpg", qpos: [2.29254658, 0.13707391, -2.6007, -2.51203059, 0.17268521, 2.44167287, -1.25293289]}
+ - {"label": "[Placed state] Pan at starting position, Tomato in the pan", "image": "../images/state_1_placed.jpg", qpos: [2.48993911, -0.00736255, -2.6007, -2.72271268, 0.23545639, 2.76292941, -1.15290193]}
+ - {"label": "[Alternative place order] Pan on stove, Tomato at initial state", "image": "../images/state_2_alternative_place_order.jpg", qpos: [2.3518, -0.294881, -2.51727, -2.578926, 0.898269, 2.512925, -1.786358]}
+ - {"label": "[Cooking state] Pan on stove, Tomato in the pan", "image": "../images/state_3_cooking.jpg", qpos: [2.6007, 0.44476266, -1.85758036, -2.66545066, 0.8054401, 2.76135968, -0.87565673]}
+ - {"label": "[Finished state] Pan on grate, Tomato in the bowl", "image": "../images/state_4_finished.jpg", qpos: [2.49300792, -0.34706915, -2.6007, -2.27311923, 0.08866864, 2.97527412, -1.19444555]}
+ - {"label": "[Failed (terminal) state] Pan at starting position, Tomato on stove", terminal: true, outcome: failure, "image": "../images/state_5_failed_tomato_on_stove.jpg", qpos: [2.2364306449890137, 0.3513893187046051, -1.5518420934677124, -2.536534547805786, 0.419802188873291, 2.749378204345703, -0.6760472655296326]}
+ - {"label": "[Failed (terminal) state] Pan on the stove, Tomato in bowl", terminal: true, outcome: failure, "image": "../images/state_6_failed_pan_on_stove_tomato_in_bowl.jpg", qpos: [2.44100291, -0.42743372, -2.6007, -2.27857659, -0.32037654, 3.18714712, -0.75225445]}
+
+# [ordered state IDs, accepted demonstration quota]. Planned collection finishes
+# one sequence's quota before advancing to the next sequence in this order.
+# Evaluation can choose any defined start/goal state independently of these quotas.
+edge_combinations:
+  - [[0, 5], 50]
+  - [[0, 1, 3], 50]
+  - [[0, 2, 3], 50]
+  - [[2, 3, 4], 50]
+  - [[0, 2, 6], 50]
+  - [[1, 3, 4], 50]
+
+# Sparse reward: 1 on the last retained transition arriving at these state IDs.
+# Other transitions (including arrivals at other subgoals) receive 0.
+reward_states: [4]
+
+# Independent uniform +/- degrees per joint at each explicit state reset.
+# Set 0 for exact nominal resets; a seven-element list allows per-joint ranges.
+qpos_noise_deg: 2.0
+
+# Fixed global-camera mount pose, copied from MDPO deploy.yaml (radians).
+# H and automatic resets after E position this arm before resetting the FR3.
+# Set agilex_qpos: null to disable camera-arm control. FR3 reset noise does not apply.
+agilex_qpos: [0.30199822, 0.97517933, -1.05531911, 0.032499, 0.689858, -0.21507256]
+agilex_can: can_piper

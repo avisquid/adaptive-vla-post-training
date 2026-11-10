@@ -1,0 +1,26 @@
+# pi0.5 kitchen SFT, canonical prompts (Hugging Face xinyunsunshine/pi05-kitchen-sft-v5,
+# h50/canonical, step 22000: the latest published step of the 30,000-update run). Trained on
+# rsm_cooking_v5 with 50-action chunks and one canonical instruction per route edge, so the
+# dashboard sends the prompt for the edge being driven (it changes when G marks a goal).
+# Stored in the git-ignored checkpoints/ folder; relative paths resolve against VLA-Adaptation/.
+# Download: see docs/bc_setup.md "Kitchen SFT checkpoint".
+defaults:
+  - pi05_stock
+  - _self_
+
+checkpoint: checkpoints/pi05-kitchen-sft-v5/h50/canonical/checkpoints/22000
+# pi05_cooking_stock with action_horizon=50: same architecture and transforms. Its
+# normalization stats are linked to assets/jmarangola/rsm_cooking_v5 inside the checkpoint.
+config_name: pi05_cooking_stock_ft50_s0
+# The canonical instruction for each trained edge. Edges it was not trained on cannot be rolled out.
+prompts: checkpoints/pi05-kitchen-sft-v5/h50/canonical/language_prompts.json
+# Named prompts selectable in the dashboard's Policy prompt menu (not tied to a route edge).
+# Each chains the trained edge instructions for the whole task: 0 -> 2 -> 3 -> 4 or 0 -> 1 -> 3 -> 4.
+extra_prompts:
+  full_task: Place the tomato in the pan on the stove, then pour the pan's contents into the bowl and place the pan on the grate.
+  full_task_stepwise: Place the tomato in the pan, place the pan on the stove, then pour the pan's contents into the bowl and place the pan on the grate.
+  full_task_four_steps: Place the tomato in the pan, Place the pan containing the tomato on the stove, Pour the pan's contents into the bowl, then place the pan on the grate
+# Fallback when no route edge is known (warmup only).
+prompt: Place the tomato on the stove.
+# Actions executed from each 50-action chunk before replanning (the whole chunk: 1 s at 50 Hz).
+execute_k: 50

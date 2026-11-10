@@ -1,0 +1,85 @@
+defaults:
+  - osc
+  - task: tabletop
+  # Optional policy rollouts with takeover: rollout=pi05_stock (see config/rollout/).
+  - rollout: null
+  - _self_
+
+# Shared states, reset poses, route quotas, and cameras live in config/task/.
+# Hydra exposes them as cfg.task.states, cfg.task.edge_combinations, etc.
+
+# AgileX gripper over CAN — lives at the top level because
+# AgileXGripper reads cfg.gripper.{CAN,torque}.
+gripper:
+  CAN: can_gripper
+  torque: 2  # Nm
+
+# Dataset output and the instruction for this collection session.
+# Required CLI overrides (unless collect.dry_run=true):
+#   collect.dataset_root=/abs/path/to/lerobot_datasets
+#   collect.repo_id=my_task_v1
+#   collect.task_prompt="pick up the red block"
+#
+# Single FR3 + AgileX gripper + SpaceMouse. Use conda env adaptive
+# (aiofranka 0.9, LeRobot 0.3.3). Each full route becomes one episode.
+collect:
+  dataset_root: ???
+  repo_id: ???
+  task_prompt: ???
+
+  # Teleoperate without writing a dataset; the fields above are not required.
+  # T enables setup teleop before qpos capture; H still validates its target.
+  dry_run: false
+  # Hardware-free preview: never connects to a robot, CAN, HID or cameras.
+  simulate: false
+
+  # E seals the staged episode, resets, then finalizes the dataset in background.
+  # No reset when all quotas are complete. S still starts recording explicitly.
+  auto_reset_after_save: true
+
+  # Nominal LeRobot/video FPS for retained transitions; keep matched to
+  # robot.freq. Quasi-static recording omits stationary control ticks.
+  fps: 50
+
+  # Gripper widths (meters). AgileX physical range is [0, 0.069].
+  # The SpaceMouse gripper button toggles between these two targets.
+  gripper_open_width: 0.069
+  gripper_closed_width: 0.004
+
+  # SpaceMouse polling rate (Hz). Must be >= fps so deltas stay fresh.
+  spacemouse_freq: 100
+  spacemouse_path: null
+  # Translation sensitivity relative to the original SpaceMouse deltas.
+  # 1.0 is the original speed. Rotation sensitivity is unchanged.
+  spacemouse_translation_scale: 1.0
+
+  # High-resolution video of every attempt (S or P until save, discard or exit),
+  # from a camera that is not a policy input; also in dry runs, not in simulation.
+  # One folder per attempt under root. Set attempt_video: null to disable.
+  attempt_video:
+    serial: "242622071805"  # Second D435I.
+    resolution: [1920, 1080]
+    frame_rate: 30  # The D435I's highest rate at 1080p.
+    root: ${oc.env:HOME}/attempt_videos
+    codec: h264_nvenc  # Or libx264 (CPU).
+    quality: 23  # NVENC -cq / x264 -crf; lower is better.
+
+  ui:
+    host: 127.0.0.1
+    port: 8766
+    heartbeat_timeout: 3.0
+
+  # LeRobot writer options. use_videos=true stores rgb as mp4 (smaller,
+  # needs ffmpeg). Set to false to store per-frame pngs instead.
+  use_videos: true
+  # Saving runs in its own process, off robot.realtime_cpu; these limits apply only to it.
+  image_writer_threads: 2
+  save:
+    cpu_threads: 1
+    startup_timeout_s: 120
+    timeout_s: 300
+  video_encoding:
+    preset: veryfast
+    crf: 30
+    gop: 2
+    threads: 2

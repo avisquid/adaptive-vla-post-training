@@ -1,0 +1,5 @@
+# Ruckig 0.17.3 still uses scikit-build-core's pre-0.10 cmake.targets setting.
+scikit-build-core==0.9.10
+cmake==3.31.6
+ninja==1.11.1.4
+pybind11==2.13.6

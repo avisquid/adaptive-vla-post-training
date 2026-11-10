@@ -1,0 +1,31 @@
+robot: 
+  ip: "172.16.0.2"
+  # OSC (operational space) gains
+  ee_kp: [300.0, 300.0, 300.0, 1000.0, 1000.0, 1000.0]
+  ee_kd: [10.0, 10.0, 10.0, 10.0, 10.0, 10.0]
+  # Adds only a bounded torque in the existing OSC nullspace.
+  # Cartesian gains, SpaceMouse deltas, and the limit-pause fallback are unchanged.
+  nullspace_avoidance:
+    enabled: true
+    activation_distance: 0.60      # rad from either joint limit; zero outside
+    full_strength_distance: 0.05  # rad; smoothly reaches maximum bias here
+    max_bias_torque: 2.0          # Nm before projection
+    max_projected_torque: 1.5     # Nm/joint cap, scaled without changing direction
+
+  # Before each target is sent, map its move from the measured pose over one
+  # tick to joint velocities and, if max |dq| / limit exceeds 1, shorten the whole
+  # move (translation and rotation by one factor) so the fastest joint is at its limit.
+  velocity_scaling:
+    enabled: false
+    # Of the URDF limits (2.62 rad/s joints 1-4, 5.26/4.18/5.26 joints 5-7). The
+    # move is measured from the arm, so its tracking lag already leaves a margin.
+    limit_fraction: 0.75
+
+  freq: 50
+  home_qpos: [ 0.10471976, -0.41887902, -0.06981317, -2.61799388, -0.03490659, 2.21656815, -0.73303829]
+  # Largest joint error [rad] accepted after a reset move.
+  reset_tolerance: 0.03
+  # aiofranka's native 1 kHz loop runs on this CPU, kept free by isolcpus=31.
+  realtime_cpu: 31
+  # false: model the arm without Desk's end-effector profile, as the OSC server did.
+  read_tool: false

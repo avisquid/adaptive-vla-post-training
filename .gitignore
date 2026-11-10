@@ -1,0 +1,35 @@
+# Model checkpoints and weights (kept outside the repo; see AGENTS.md)
+checkpoints/
+*.pt
+*.pth
+*.ckpt
+*.safetensors
+*.bin
+*.msgpack
+*.orbax-checkpoint*
+
+# Large data / media artifacts
+*.npy
+*.npz
+*.h5
+*.hdf5
+*.parquet
+*.pkl
+*.mp4
+*.zarr/
+
+# Run outputs and logs
+outputs/
+wandb/
+*.log
+
+# Python build and cache files
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/

@@ -1,0 +1,4 @@
+# Writer versions tested by tests/test_route_recorder.py in conda env vla.
+# Hardware drivers come from the existing vla robot environment.
+lerobot==0.3.3
+datasets==3.6.0

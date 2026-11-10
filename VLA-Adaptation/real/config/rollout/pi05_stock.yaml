@@ -1,0 +1,27 @@
+# Roll out stock pi0.5 BC from the collection dashboard: P runs the policy,
+# Space takes over with the SpaceMouse. Rollouts need their own dataset
+# (collect.repo_id) because every frame carries an intervention label.
+# Other checkpoints: override rollout.checkpoint and rollout.config_name.
+kind: openpi
+checkpoint: ${oc.env:HOME}/.local/share/rsm-real/checkpoints/pi05_bc_rsm_real_stock_s1_29999
+config_name: pi05_cooking_stock
+# Language instruction the checkpoint was trained with.
+prompt: Follow the displayed cooking state sequence
+cameras: [global, wrist]
+device: cuda:0
+# Actions executed from each predicted chunk before replanning; null = whole chunk.
+execute_k: 10
+batch_size: 1
+candidate_horizon: null
+# Interrupt the attempt if one plan takes longer than this (seconds).
+plan_timeout_s: 2.0
+inference:
+  # The worker runs in the rsm environment, which has the pinned OpenPI.
+  python: ${oc.env:HOME}/miniforge3/envs/rsm/bin/python
+  environment:
+    JAX_PLATFORMS: cuda
+    XLA_PYTHON_CLIENT_MEM_FRACTION: "0.8"
+    XLA_FLAGS: --xla_gpu_enable_triton_gemm=false
+  
+  timeout_s: 600
+  warmup_steps: 2

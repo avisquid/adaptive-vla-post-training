@@ -1,0 +1,20 @@
+--- a/pyproject.toml
++++ b/pyproject.toml
+@@ -13,7 +13,6 @@
+     "flatbuffers>=24.3.25",
+     "flax==0.10.2",
+     "fsspec[gcs]>=2024.6.0",
+-    "gym-aloha>=0.1.1",
+     "imageio>=2.36.1",
+     "jax[cuda12]==0.5.3",
+     "jaxtyping==0.2.36",
+@@ -40,6 +39,9 @@
+     "polars>=1.30.0",
+ ]
+ 
++
++[project.optional-dependencies]
++simulation = ["gym-aloha>=0.1.1"]
+ 
+ [project.urls]
+ Repository = "https://github.com/Physical-Intelligence/openpi"

@@ -1,0 +1,53 @@
+# Seven ft50 TrainConfigs from rsm_real PR #13, commit fbf76ec93c8ec55d3538384a37b18989bbaa83ab.
+# Configuration additions only; existing model code and transforms are unchanged.
+--- a/src/openpi/training/config.py
++++ b/src/openpi/training/config.py
+@@ -1528,6 +1528,48 @@
+     *polaris_config.get_polaris_configs(),
+ ]
+ 
++_COOKING_FT50_SPECS = (
++    ("pi05_cooking_stock_ft50_s0",         "pi05_cooking_stock",         "pi05_cooking_stock/stock_s0/29999"),
++    ("pi05_cooking_stock_ft50_s1",         "pi05_cooking_stock",         "pi05_cooking_stock/stock_s1/29999"),
++    ("pi05_cooking_rise_ft50_s0",          "pi05_cooking_rise",          "pi05_cooking_rise/rise_s0/29999"),
++    ("pi05_cooking_rise_ft50_s1",          "pi05_cooking_rise",          "pi05_cooking_rise/rise_s1/29999"),
++    ("pi05_cooking_riseadv_ft50_s0",       "pi05_cooking_riseadv",       "pi05_cooking_riseadv/riseadv_s0/29999"),
++    # the two sweep cells rise_stack/CHECKPOINTS.md marks as keeps/best (not risebn, which diverged; not wsctrl,
++    # which is the matched control): sn1_knn0p03 is the default proposer ("the current best cell of the sweep",
++    # spread 0.446 / oracle 0.440) and sn0p1_knn0p03 has the lowest oracle of any pi0.5 proposer (0.458).
++    ("pi05_cooking_sn1_knn0p03_ft50_s0",   "pi05_cooking_sn1_knn0p03",   "pi05_cooking_sn1_knn0p03/ws_s0/9999"),
++    ("pi05_cooking_sn0p1_knn0p03_ft50_s0", "pi05_cooking_sn0p1_knn0p03", "pi05_cooking_sn0p1_knn0p03/ws_s0/9999"),
++)
++
++_RR_CKPT_BASE = "/proj/dmfexp/zwhong/rsm_rise/runs/openpi/checkpoints"
++
++
++def _cooking_ft50(parent: TrainConfig, name: str, init_ckpt: str) -> TrainConfig:
++    return dataclasses.replace(
++        parent,
++        name=name,
++        model=dataclasses.replace(parent.model, action_horizon=50),
++        num_train_steps=200_000,
++        keep_period=50_000,
++        save_interval=500,
++        num_workers=16,
++        lr_schedule=_optimizer.CosineDecaySchedule(
++            warmup_steps=2_000, peak_lr=2.5e-5, decay_steps=200_000, decay_lr=5e-6
++        ),
++        weight_loader=weight_loaders.CheckpointWeightLoader(f"{_RR_CKPT_BASE}/{init_ckpt}/params"),
++    )
++
++
++_COOKING_FT50_PARENTS_BY_NAME = {c.name: c for c in _CONFIGS}
++_CONFIGS = [
++    *_CONFIGS,
++    *(
++        _cooking_ft50(_COOKING_FT50_PARENTS_BY_NAME[parent], name, init_ckpt)
++        for name, parent, init_ckpt in _COOKING_FT50_SPECS
++    ),
++]
++
++
+ if len({config.name for config in _CONFIGS}) != len(_CONFIGS):
+     raise ValueError("Config names must be unique.")
+ _CONFIGS_DICT = {config.name: config for config in _CONFIGS}
