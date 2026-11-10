@@ -32,3 +32,11 @@ same preset:
 python -m real.collect_sft_data task=tabletop rollout=pi05_kitchen_sft_v5 \
   rollout.checkpoint=checkpoints/dagger/pi05_cooking_stock_ft50_s0/kitchen_dagger_1/1999 ...
 ```
+
+## All-action DAgger and union comparison
+
+The separate [cluster training workflow](../dagger_training/README.md) reproduces
+the completed DAgger_1 and DAgger + cooking-language experiments with pinned
+Hugging Face inputs, episode holdouts, Slurm submission, and checkpoint export.
+It trains on all recorded actions, including policy actions; it does not apply
+this directory's intervention-only filter.

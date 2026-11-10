@@ -1,0 +1,14 @@
+__pycache__/
+*.pyc
+*.out
+*.err
+openpi-assets/
+**/dataset
+**/language
+**/base
+**/lerobot-home
+**/training-checkpoints
+**/assets
+**/export
+**/exports
+**/openpi_train_comparison.py

@@ -62,3 +62,9 @@ keys and data format: [docs/single_arm_collection.md](docs/single_arm_collection
 conda run -n adaptive python -m pytest -q $(ls tests/test_*.py | grep -v deployment)   # dashboard + robot stack
 conda run -n rsm python -m pytest -q tests/test_deployment_*.py                    # model worker
 ```
+
+## Cluster training experiments
+
+See [DAgger and union training](dagger_training/README.md) for the pinned
+DAgger_1 baseline and union comparison, Slurm launch instructions, offline
+comparison results, and Hugging Face checkpoints.

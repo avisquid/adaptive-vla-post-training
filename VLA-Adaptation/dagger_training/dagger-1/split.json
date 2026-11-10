@@ -1,0 +1,100 @@
+{
+  "episodes": {
+    "0": {
+      "split": "train"
+    },
+    "1": {
+      "split": "train"
+    },
+    "2": {
+      "split": "valid"
+    },
+    "3": {
+      "split": "train"
+    },
+    "4": {
+      "split": "train"
+    },
+    "5": {
+      "split": "train"
+    },
+    "6": {
+      "split": "train"
+    },
+    "7": {
+      "split": "train"
+    },
+    "8": {
+      "split": "train"
+    },
+    "9": {
+      "split": "train"
+    },
+    "10": {
+      "split": "train"
+    },
+    "11": {
+      "split": "valid"
+    },
+    "12": {
+      "split": "train"
+    },
+    "13": {
+      "split": "train"
+    },
+    "14": {
+      "split": "train"
+    },
+    "15": {
+      "split": "train"
+    },
+    "16": {
+      "split": "train"
+    },
+    "17": {
+      "split": "train"
+    },
+    "18": {
+      "split": "train"
+    },
+    "19": {
+      "split": "train"
+    },
+    "20": {
+      "split": "train"
+    },
+    "21": {
+      "split": "valid"
+    },
+    "22": {
+      "split": "train"
+    },
+    "23": {
+      "split": "train"
+    },
+    "24": {
+      "split": "train"
+    },
+    "25": {
+      "split": "valid"
+    },
+    "26": {
+      "split": "train"
+    },
+    "27": {
+      "split": "train"
+    },
+    "28": {
+      "split": "train"
+    },
+    "29": {
+      "split": "train"
+    },
+    "30": {
+      "split": "train"
+    },
+    "31": {
+      "split": "train"
+    }
+  }
+}

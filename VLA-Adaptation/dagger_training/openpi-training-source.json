@@ -1,0 +1,14 @@
+{
+  "upstream_revision": "215abfb217dbac7d5f1273282331b9b1866c0479",
+  "files_sha256": {
+    "scripts/train.py": "ce385ec5b5ec4a6be39c8b2b8f97fe7272c1487ab951cdde42c800fde4063898",
+    "src/openpi/training/config.py": "8d6da7ee2a8908d29776b5ff3e85c5c24e096242e7df397acd8aac5289699d36",
+    "src/openpi/training/data_loader.py": "472d4237ea59b5bc7c5819f473b52b731b7169157b8589f34abd18d27dd05edf",
+    "src/openpi/training/optimizer.py": "b5ddddce59544588afb3163b3998fbab947662834b6619ea6b422db54d1f319c",
+    "src/openpi/training/weight_loaders.py": "0fbe68b240bb318394cf6ea98ac8f328a1df709457439fb28537308ab75b13ed",
+    "src/openpi/policies/cooking_policy.py": "7569d5827e218b49df429f2c0b1b6774735900cc0c888f061da9f2e9b639b099",
+    "src/openpi/models/model.py": "c52438185674a153c205829fe940473df9981b1ff6050270ff0a0f62f9f2c7b8",
+    "src/openpi/models/pi0.py": "68cfb2e31d6b951fb22f145de718b3c5d5e89cd075927c5852725b4a4fb05998",
+    "src/openpi/models/pi0_config.py": "e28bff288a31d87ab2b277571c64e3dfcb4ff21b156e05568c02f342e66a3434"
+  }
+}
